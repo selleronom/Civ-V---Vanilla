@@ -1,0 +1,45 @@
+name: Sync Civ V - Vanilla Ruleset
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run once per day at midnight UTC
+  
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  sync-ruleset:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Clone Unciv repository
+        run: |
+          git clone --depth 1 https://github.com/yairm210/Unciv.git /tmp/Unciv
+      
+      - name: Copy Civ V - Vanilla ruleset
+        run: |
+          # Create jsons directory if it doesn't exist
+          mkdir -p jsons
+          
+          # Copy all JSON files from the Civ V - Vanilla ruleset
+          cp -r /tmp/Unciv/android/assets/jsons/Civ\ V\ -\ Vanilla/* jsons/
+          
+          # Clean up
+          rm -rf /tmp/Unciv
+      
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: Sync Civ V - Vanilla ruleset from Unciv repository
+          title: Update Civ V - Vanilla ruleset
+          body: |
+            This PR automatically syncs the Civ V - Vanilla ruleset from the main Unciv repository.
+            
+            Source: https://github.com/yairm210/Unciv/tree/master/android/assets/jsons/Civ%20V%20-%20Vanilla
+          branch: sync-ruleset
+          delete-branch: true
