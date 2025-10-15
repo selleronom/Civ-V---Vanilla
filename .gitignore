@@ -1,0 +1,12 @@
+# Unciv mod files that shouldn't be committed
+*.jar
+Unciv.jar
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.iml
